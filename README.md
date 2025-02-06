@@ -1,4 +1,4 @@
-# fencely.nvim
+# fencey.nvim
 
 Yank code as fenced code blocks
 

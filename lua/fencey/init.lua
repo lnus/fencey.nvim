@@ -4,6 +4,7 @@ M.fence_yank_mode = false
 M.config = {
   highlight = false,
   virtual_text = '[FenceYank]',
+  text_color = '#FFFF00',
 }
 
 local original_escape_map = vim.fn.maparg('<Esc>', 'n', false, true)
@@ -17,7 +18,7 @@ local function set_virtual_text()
 
   vim.api.nvim_buf_set_extmark(0, extmark_ns, row, 0, {
     virt_text = { { M.config.virtual_text, 'FenceYankText' } },
-    virt_text_pos = 'right_align',
+    virt_text_pos = 'eol',
   })
 end
 
@@ -77,7 +78,11 @@ function M.setup(config)
   M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
   vim.api.nvim_create_augroup('FenceYank', { clear = true })
-  vim.api.nvim_set_hl(0, 'FenceYankText', { fg = '#FF0000', bold = true })
+  vim.api.nvim_set_hl(
+    0,
+    'FenceYankText',
+    { fg = M.config.text_color, bold = true }
+  )
 
   vim.api.nvim_create_autocmd('TextYankPost', {
     group = 'FenceYank',
