@@ -39,7 +39,7 @@ I recommend keybinding this to something reasonable, see [example config](#examp
 **NOT** needed with `lazy.nvim` if `opts` is set, like above
 
 ```lua
-require('stalker').setup()
+require('fencey').setup()
 ```
 
 ## Configuration
