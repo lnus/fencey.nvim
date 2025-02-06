@@ -1,41 +1,54 @@
 local M = {}
 
+M.fence_yank_pending = false
 M.config = {
   highlight = false, -- TODO: Implement
 }
 
-M.copy_as_fence = function(start_line, end_line)
-  local ft = vim.bo.filetype or ''
-  local buf = vim.api.nvim_get_current_buf()
-
-  if not start_line or not end_line then
-    start_line = 0
-    end_line = vim.api.nvim_buf_line_count(buf)
+local function fence_yank_handler(event)
+  if not M.fence_yank_pending then
+    return
   end
 
-  -- Adjust for 1-indexing
-  start_line = start_line - 1
+  M.fence_yank_pending = false
 
-  local lines = vim.api.nvim_buf_get_lines(buf, start_line, end_line, false)
+  local ft = vim.bo.filetype or ''
+  local reg = event.regname ~= '' and event.regname or '"'
+  local yank_text = vim.fn.getreg(reg)
+  local trimmed_yank_text = yank_text:gsub('%s+$', '') -- Remove trailing whitespace/newlines
+  local lines = vim.split(trimmed_yank_text, '\n', { plain = true })
+
   local md = { '```' .. ft }
   for _, line in ipairs(lines) do
     table.insert(md, line)
   end
   table.insert(md, '```')
   local md_str = table.concat(md, '\n')
-  vim.fn.setreg('+', md_str)
 
-  if #lines > 1 then
-    print(#lines .. ' lines fence yanked')
+  -- TODO: Lookup if I handle this correctly
+  -- It works on my machine™️
+  vim.fn.setreg('+', md_str)
+  print 'Fence-yank applied to current yank.'
+
+  if M.config.highlight then
+    vim.hl.on_yank() -- TODO: Allow config?
   end
 end
 
 function M.setup(config)
   M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
-  vim.api.nvim_create_user_command('FenceYank', function(opts)
-    M.copy_as_fence(opts.line1, opts.line2)
-  end, { desc = 'Copy as a fence', range = true })
+  vim.api.nvim_create_augroup('FenceYank', { clear = true })
+
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    group = 'FenceYank',
+    callback = fence_yank_handler,
+  })
+
+  vim.api.nvim_create_user_command('FenceYank', function()
+    M.fence_yank_pending = true
+    print 'Entered into fence yank mode'
+  end, { desc = 'Copy as a fence' })
 end
 
 return M
