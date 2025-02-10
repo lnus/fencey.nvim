@@ -32,12 +32,12 @@ local function exit_fence_yank_mode()
 
   local ok, err = pcall(function()
     if original_escape_map then
-      vim.api.nvim_set_keymap('n', '<Esc>', original_escape_map.rhs, {
+      vim.keymap.set('n', '<Esc>', original_escape_map.rhs, {
         noremap = original_escape_map.noremap,
         silent = original_escape_map.silent,
       })
     else
-      vim.api.nvim_del_keymap('n', '<Esc>')
+      vim.keymap.del('n', '<Esc>')
     end
   end)
 
@@ -98,7 +98,7 @@ function M.setup(opts)
     set_virtual_text()
     utils.debug 'Entered into fence yank mode'
 
-    vim.api.nvim_set_keymap('n', '<Esc>', '', {
+    vim.keymap.set('n', '<Esc>', '', {
       callback = exit_fence_yank_mode,
       noremap = true,
       silent = true,
