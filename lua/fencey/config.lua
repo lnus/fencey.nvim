@@ -2,6 +2,7 @@ local M = {}
 
 M.config = {
   verbose = false,
+  register = '+',
   virtual_text = {
     content = '[FY]',
     hl_group = 'DiagnosticVirtualTextInfo',

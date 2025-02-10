@@ -67,9 +67,7 @@ local function apply_fence_yank(event)
   local yank_text = vim.fn.getreg(reg)
   local md_str = format_markdown(ft, yank_text)
 
-  -- TODO: Lookup if I handle this correctly
-  -- It works on my machine™️
-  vim.fn.setreg('+', md_str)
+  vim.fn.setreg(config.register, md_str)
   utils.debug 'Fence-yank applied to current yank.'
 end
 

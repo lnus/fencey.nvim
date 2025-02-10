@@ -49,6 +49,7 @@ The default configuration is very barebones.
 ```lua
 {
     verbose = false, -- Log more often
+    register = '+', -- Which register to store yank in
     virtual_text = {
         content = '[FY]', -- Virtual text content
         hl_group = 'DiagnosticVirtualTextInfo', -- Which highlight group to use
@@ -67,6 +68,7 @@ With `lazy.nvim` a config might look like this:
     'lnus/fencey.nvim',
     opts = {
         verbose = false,
+        register = '+',
         virtual_text = {
             content = '[FenceY]',
             hl_group = 'Comment',
@@ -90,6 +92,7 @@ Or a more explicit, not lazy loaded configuration:
 
         require('fencey').setup {
             verbose = false,
+            register = '+',
             virtual_text = {
                 content = '[Yanking Fence]',
                 hl_group = 'AwesomeHighlight',
